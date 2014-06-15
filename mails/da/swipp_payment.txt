@@ -1,0 +1,32 @@
+[{shop_url}] 
+
+Hi {firstname} {lastname},
+
+Tak forde du handlede hos {shop_name}! 
+
+Din ordre med reference {order_name} er blevet godgendt
+og vil bilve SÅ SNART VI HAR MODTAGET DIN BETALING. 
+
+Du har valgt at betale med swipp
+
+Her er detaljerne for din swipp
+
+I Alt: {total_paid}
+Konto navn: {swipp_owner}
+Konto telefon: {swipp_phone}
+ 
+
+Du kan se din ordre og downloade din faktura i 
+"Order history" [{history_url}] under din konto ved at klikke på "My account"
+[{my_account_url}] på vores hjemmeside.  
+
+Hvis du har en gæste konto, kan du følge din ordre via
+"Guest Tracking" [{guest_tracking_url}] på vores hjemmeside. . 
+
+{shop_name} 
+Stenhøjvej 18
+3200 Helsinge Denmark
+TLF: 2982 7320
+CVR: 31232872
+{shop_url}
+

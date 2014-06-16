@@ -23,10 +23,5 @@ Du kan se din ordre og downloade din faktura i
 Hvis du har en gæste konto, kan du følge din ordre via
 "Guest Tracking" [{guest_tracking_url}] på vores hjemmeside. . 
 
-{shop_name} 
-Stenhøjvej 18
-3200 Helsinge Denmark
-TLF: 2982 7320
-CVR: 31232872
-{shop_url}
+{shop_name} [{shop_url}]
 

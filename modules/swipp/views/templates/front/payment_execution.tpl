@@ -31,11 +31,11 @@
 	<p class="warning">{l s='Your shopping cart is empty.' mod='swipp'}</p>
 {else}
 
-<h3>{l s='Swipp payment.' mod='swipp'}</h3>
+<h3>{l s='Swipp mobile payment.' mod='swipp'}</h3>
 <form action="{$link->getModuleLink('swipp', 'validation', [], true)|escape:'html'}" method="post">
 <p>
-	<img src="{$this_path_bw}swipp.jpg" alt="{l s='Swipp' mod='swipp'}" width="86" height="49" style="float:left; margin: 0px 10px 5px 0px;" />
-	{l s='You have chosen to pay by swipp transfer.' mod='swipp'}
+	<img src="{$this_path_bw}swipp.jpg" alt="{l s='Swipp payment' mod='swipp'}" width="86" height="49" style="float:left; margin: 0px 10px 5px 0px;" />
+	{l s='You have chosen to pay by Swipp payment.' mod='swipp'}
 	<br/><br />
 	{l s='Here is a short summary of your order:' mod='swipp'}
 </p>
@@ -63,7 +63,7 @@
 	{/if}
 </p>
 <p>
-	{l s='Swipp account information will be displayed on the next page.' mod='swipp'}
+	{l s='swipp account information will be displayed on the next page.' mod='swipp'}
 	<br /><br />
 	<b>{l s='Please confirm your order by clicking "I confirm my order."' mod='swipp'}.</b>
 </p>

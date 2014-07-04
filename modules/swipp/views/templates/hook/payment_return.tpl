@@ -21,18 +21,13 @@
 {if $status == 'ok'}
     <p>{l s='Your order on %s is complete.' sprintf=$shop_name mod='swipp'}
         <br /><br />
-        {l s='Please send us a sweep with' mod='swipp'}
-        <br /><br />- {l s='Amount' mod='swipp'} <span class="price"> <strong>{$total_to_pay}</strong></span>
-        <br /><br />- {l s='Name of account owner' mod='swipp'}  <strong>{if $swippOwner}{$swippOwner}{else}___________{/if}</strong>
-        <br /><br />- {l s='Swipp phone number' mod='swipp'}  <strong>{if $swippPhone}{$swippPhone}{else}___________{/if}</strong>
-        {* if !isset($reference)}
-            <br /><br />- { ** l s='Do not forget to insert your order number #%d in the subject of your bank wire' sprintf=$id_order mod='swipp'}
-        {else}
-            <br /><br />- { ** l s='Do not forget to insert your order reference %s in the subject of your bank wire.' sprintf=$reference mod='swipp'}
-        {/if *}
-        <br /><br />{l s='An email has been sent with this information.' mod='swipp'}
-        <br /><br /> <strong>{l s='Your order will be sent as soon as we receive payment.' mod='swipp'}</strong>
-        <br /><br />{l s='If you have questions, comments or concerns, please contact our' mod='swipp'} <a href="{$link->getPageLink('contact', true)|escape:'html'}">{l s='expert customer support team. ' mod='swipp'}</a>.
+        {l s='Please send us a swipp payment with' mod='swipp'}
+        <br />- {l s='Amount' mod='swipp'} <span class="price"> <strong>{$total_to_pay}</strong></span>
+        <br />- {l s='Name of account owner' mod='swipp'}  <strong>{if $swippOwner}{$swippOwner}{else}___________{/if}</strong>
+        <br />- {l s='Swipp phone number' mod='swipp'}  <strong>{if $swippPhone}{$swippPhone}{else}___________{/if}</strong>
+        <br />{l s='An email has been sent with this information.' mod='swipp'}
+        <br /> <strong>{l s='Your order will be sent as soon as we receive payment.' mod='swipp'}</strong>
+        <br />{l s='If you have questions, comments or concerns, please contact our' mod='swipp'} <a href="{$link->getPageLink('contact', true)|escape:'html':'UTF-8'}">{l s='expert customer support team. ' mod='swipp'}</a>.
     </p>
 {else}
     <p class="warning">

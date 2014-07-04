@@ -27,11 +27,6 @@
         <br />- {l s='Amount' mod='swipp'} <span class="price"> <strong>{$total_to_pay}</strong></span>
         <br />- {l s='Name of account owner' mod='swipp'}  <strong>{if $swippOwner}{$swippOwner}{else}___________{/if}</strong>
         <br />- {l s='Swipp phone number' mod='swipp'}  <strong>{if $swippPhone}{$swippPhone}{else}___________{/if}</strong>
-        {* if !isset($reference)}
-            <br />- { ** l s='Do not forget to insert your order number #%d in the subject of your bank wire' sprintf=$id_order mod='swipp'}
-        {else}
-            <br />- { ** l s='Do not forget to insert your order reference %s in the subject of your bank wire.' sprintf=$reference mod='swipp'}
-        {/if *}
         <br />{l s='An email has been sent with this information.' mod='swipp'}
         <br /> <strong>{l s='Your order will be sent as soon as we receive payment.' mod='swipp'}</strong>
         <br />{l s='If you have questions, comments or concerns, please contact our' mod='swipp'} <a href="{$link->getPageLink('contact', true)|escape:'html':'UTF-8'}">{l s='expert customer support team. ' mod='swipp'}</a>.

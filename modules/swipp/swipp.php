@@ -29,7 +29,7 @@ class Swipp extends PaymentModule {
     public function __construct() {
         $this->name = 'swipp';
         $this->tab = 'payments_gateways';
-        $this->version = '0.1.2';
+        $this->version = '0.1.3';
         $this->author = 'CMJ Scripter';
         $this->controllers = array('payment', 'validation');
 
@@ -88,6 +88,12 @@ class Swipp extends PaymentModule {
         if (!$this->checkCurrency($params['cart']))
             return;
 
+        $cart_total = $params['cart']->getOrderTotal(true, Cart::BOTH);
+        if ((float) $cart_total > (float) Configuration::get('SWIPP_MAX_AMOUNT')) {
+            return;
+        }
+
+
         $this->smarty->assign(array(
             'this_path' => $this->_path,
             'this_path_bw' => $this->_path,
@@ -136,7 +142,7 @@ class Swipp extends PaymentModule {
                 !$this->registerHook('PDFInvoice') ||
                 !$this->registerHook('header'))
             return false;
-
+        Configuration::updateValue('SWIPP_MAX_AMOUNT', 3000.00);
         Configuration::updateValue('SWIPP_PAYMENT_STATE', $SwippOrder->id);
 
         copy(dirname(__FILE__) . '/logo.gif', _PS_IMG_DIR_ . 'os/' . $SwippOrder->id . '.gif');
@@ -173,6 +179,7 @@ class Swipp extends PaymentModule {
         if (Tools::isSubmit('btnSubmit')) {
             Configuration::updateValue('SWIPP_PHONE', Tools::getValue('SWIPP_PHONE'));
             Configuration::updateValue('SWIPP_OWNER', Tools::getValue('SWIPP_OWNER'));
+            Configuration::updateValue('SWIPP_MAX_AMOUNT', Tools::getValue('SWIPP_MAX_AMOUNT'));
         }
         $this->_html .= $this->displayConfirmation($this->l('Settings updated'));
     }
@@ -198,6 +205,10 @@ class Swipp extends PaymentModule {
         $currency_order = new Currency($cart->id_currency);
         $currencies_module = $this->getCurrency($cart->id_currency);
 
+        if (strtoupper($currency_order->iso_code) != 'DKK' || $currency_order->iso_code_num != 208) {
+            return false;
+        }
+        
         if (is_array($currencies_module))
             foreach ($currencies_module as $currency_module)
                 if ($currency_order->id == $currency_module['id_currency'])
@@ -223,6 +234,12 @@ class Swipp extends PaymentModule {
                         'label' => $this->l('Swipp Phone'),
                         'name' => 'SWIPP_PHONE',
                         'desc' => $this->l('The phone registred with swipp')
+                    ),
+                    array(
+                        'type' => 'text',
+                        'label' => $this->l('Swipp Max Payment'),
+                        'name' => 'SWIPP_MAX_AMOUNT',
+                        'desc' => $this->l('The maximum amount allowed through swipp per order')
                     ),
                 ),
                 'submit' => array(
@@ -256,6 +273,7 @@ class Swipp extends PaymentModule {
         return array(
             'SWIPP_OWNER' => Tools::getValue('SWIPP_OWNER', Configuration::get('SWIPP_OWNER')),
             'SWIPP_PHONE' => Tools::getValue('SWIPP_PHONE', Configuration::get('SWIPP_PHONE')),
+            'SWIPP_MAX_AMOUNT' => Tools::getValue('SWIPP_MAX_AMOUNT', Configuration::get('SWIPP_MAX_AMOUNT')),
         );
     }
 

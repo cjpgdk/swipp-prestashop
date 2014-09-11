@@ -216,8 +216,8 @@
 											{if isset($input.readonly) && $input.readonly} readonly="readonly"{/if}
 											{if isset($input.disabled) && $input.disabled} disabled="disabled"{/if}
 											{if isset($input.autocomplete) && !$input.autocomplete} autocomplete="off"{/if}
-											{if isset($input.required) && $input.required } required="required" {/if}
-											{if isset($input.placeholder) && $input.placeholder } placeholder="{$input.placeholder}"{/if}
+											{if isset($input.required) && $input.required} required="required" {/if}
+											{if isset($input.placeholder) && $input.placeholder} placeholder="{$input.placeholder}"{/if}
 											/>
 										{if isset($input.suffix)}
 										<span class="input-group-addon">
@@ -266,7 +266,7 @@
 											{if isset($input.readonly) && $input.readonly} readonly="readonly"{/if}
 											{if isset($input.disabled) && $input.disabled} disabled="disabled"{/if}
 											{if isset($input.autocomplete) && !$input.autocomplete} autocomplete="off"{/if}
-											{if isset($input.placeholder) && $input.placeholder } placeholder="{$input.placeholder}"{/if}
+											{if isset($input.placeholder) && $input.placeholder} placeholder="{$input.placeholder}"{/if}
 											/>
 										{if isset($input.suffix)}{$input.suffix}{/if}
 										{if isset($input.maxchar)}

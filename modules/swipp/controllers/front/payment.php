@@ -46,7 +46,7 @@ class SwippPaymentModuleFrontController extends ModuleFrontController {
             'id_currency_accepted' => $dkkC->id,
             'id_currency' => $cart->id_currency,
             'currencies' => $this->module->getCurrency((int) $cart->id_currency),
-            'total' => $cart->getOrderTotal(true, Cart::BOTH),
+            'total' => $this->module->__getPriceDkk($cart),
             'this_path' => $this->module->getPathUri(),
             'this_path_bw' => $this->module->getPathUri(),
             'this_path_ssl' => Tools::getShopDomainSsl(true, true) . __PS_BASE_URI__ . 'modules/' . $this->module->name . '/'

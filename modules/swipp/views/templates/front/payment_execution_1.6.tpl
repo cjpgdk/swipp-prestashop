@@ -47,29 +47,15 @@
             </p>
             <p>
                 - {l s='The total amount of your order is' mod='swipp'}
-                <span id="amount" class="price">{displayPrice price=$total}</span>
+                <span id="amount" class="price">{displayPrice price=$total currency=$id_currency_accepted}</span>
                 {if $use_taxes == 1}
                     {l s='(tax incl.)' mod='swipp'}
                 {/if}
             </p>
             <p>
                 -
-                {if $currencies|@count > 1}
-                    {l s='We allow several currencies to be sent via swipp.' mod='swipp'}
-                <div class="form-group">
-                    <label>{l s='Choose one of the following:' mod='swipp'}</label>
-                    <select id="currency_payement" class="form-control" name="currency_payement">
-                        {foreach from=$currencies item=currency}
-                            <option value="{$currency.id_currency}" {if $currency.id_currency == $cust_currency}selected="selected"{/if}>
-                                {$currency.name}
-                            </option>
-                        {/foreach}
-                    </select>
-                </div>
-            {else}
-                {l s='We allow the following currency to be sent via swipp:' mod='swipp'}&nbsp;<b>{$currencies.0.name}</b>
-                <input type="hidden" name="currency_payement" value="{$currencies.0.id_currency}" />
-            {/if}
+                {l s='We accept the following currency to be sent by swipp mobile transfer:' mod='swipp'}&nbsp;<b>{$name_currency}</b>
+                <input type="hidden" name="currency_payement" value="{$id_currency}" />
             </p>
             <p>
                 - {l s='Swipp account information will be displayed on the next page.' mod='swipp'}

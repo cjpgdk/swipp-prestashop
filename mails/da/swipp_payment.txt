@@ -14,6 +14,8 @@ Her er detaljerne for din swipp
 I Alt: {total_paid}
 Konto navn: {swipp_owner}
 Konto telefon: {swipp_phone}
+Du bedes venligst overføre følge beløb i Danske Kroner
+I Alt til betaling: {swipp_payment_dkk}
  
 
 Du kan se din ordre og downloade din faktura i 

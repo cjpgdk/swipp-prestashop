@@ -28,48 +28,37 @@
 {include file="$tpl_dir./order-steps.tpl"}
 
 {if $nbProducts <= 0}
-	<p class="warning">{l s='Your shopping cart is empty.' mod='swipp'}</p>
+    <p class="warning">{l s='Your shopping cart is empty.' mod='swipp'}</p>
 {else}
 
-<h3>{l s='Swipp mobile payment.' mod='swipp'}</h3>
-<form action="{$link->getModuleLink('swipp', 'validation', [], true)|escape:'html'}" method="post">
-<p>
-	<img src="{$this_path_bw}swipp.jpg" alt="{l s='Swipp payment' mod='swipp'}" width="86" height="49" style="float:left; margin: 0px 10px 5px 0px;" />
-	{l s='You have chosen to pay by Swipp payment.' mod='swipp'}
-	<br/><br />
-	{l s='Here is a short summary of your order:' mod='swipp'}
-</p>
-<p style="margin-top:20px;">
-	- {l s='The total amount of your order is' mod='swipp'}
-	<span id="amount" class="price">{displayPrice price=$total}</span>
-	{if $use_taxes == 1}
-    	{l s='(tax incl.)' mod='swipp'}
-    {/if}
-</p>
-<p>
-	-
-	{if $currencies|@count > 1}
-		{l s='We allow several currencies to be sent via swipp.' mod='swipp'}
-		<br /><br />
-		{l s='Choose one of the following:' mod='swipp'}
-		<select id="currency_payement" name="currency_payement" onchange="setCurrency($('#currency_payement').val());">
-			{foreach from=$currencies item=currency}
-				<option value="{$currency.id_currency}" {if $currency.id_currency == $cust_currency}selected="selected"{/if}>{$currency.name}</option>
-			{/foreach}
-		</select>
-	{else}
-		{l s='We allow the following currency to be sent via swipp:' mod='swipp'}&nbsp;<b>{$currencies.0.name}</b>
-		<input type="hidden" name="currency_payement" value="{$currencies.0.id_currency}" />
-	{/if}
-</p>
-<p>
-	{l s='swipp account information will be displayed on the next page.' mod='swipp'}
-	<br /><br />
-	<b>{l s='Please confirm your order by clicking "I confirm my order."' mod='swipp'}.</b>
-</p>
-<p class="cart_navigation" id="cart_navigation">
-	<input type="submit" value="{l s='I confirm my order' mod='swipp'}" class="exclusive_large" />
-	<a href="{$link->getPageLink('order', true, NULL, "step=3")|escape:'html'}" class="button_large">{l s='Other payment methods' mod='swipp'}</a>
-</p>
-</form>
+    <h3>{l s='Swipp mobile payment.' mod='swipp'}</h3>
+    <form action="{$link->getModuleLink('swipp', 'validation', [], true)|escape:'html'}" method="post">
+        <p>
+            <img src="{$this_path_bw}swipp.jpg" alt="{l s='Swipp' mod='swipp'}" width="86" height="49" style="float:left; margin: 0px 10px 5px 0px;" />
+            {l s='You have chosen to pay by swipp mobile transfer.' mod='swipp'}
+            <br/><br />
+            {l s='Here is a short summary of your order:' mod='swipp'}
+        </p>
+        <p style="margin-top:20px;">
+            - {l s='The total amount of your order is' mod='swipp'}
+            <span id="amount" class="price">{displayPrice price=$total currency=$id_currency_accepted}</span>
+            {if $use_taxes == 1}
+                {l s='(tax incl.)' mod='swipp'}
+            {/if}
+        </p>
+        <p>
+            -
+            {l s='We accept the following currency to be sent by swipp mobile transfer:' mod='swipp'}&nbsp;<b>{$name_currency}</b>
+            <input type="hidden" name="currency_payement" value="{$id_currency}" />
+        </p>
+        <p>
+            {l s='Swipp account information will be displayed on the next page.' mod='swipp'}
+            <br /><br />
+            <b>{l s='Please confirm your order by clicking \'I confirm my order\'' mod='swipp'}.</b>
+        </p>
+        <p class="cart_navigation">
+            <a href="{$link->getPageLink('order.php', true)}?step=3" class="button_large hideOnSubmit">{l s='Other payment methods' mod='swipp'}</a>
+            <input type="submit" name="submit" value="{l s='I confirm my order' mod='swipp'}" class="exclusive_large hideOnSubmit" />
+        </p>
+    </form>
 {/if}

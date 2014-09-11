@@ -24,7 +24,7 @@
             <a class="swipp" 
                 href="{$link->getModuleLink('swipp', 'payment')|escape:'html':'UTF-8'}" 
                 title="{l s='Pay by mobilphone through swipp' mod='swipp'}">
-                {l s='Pay by mobilphone through swipp' mod='swipp'}
+                {l s='Pay by mobilphone through swipp' mod='swipp'} <i>(<b>{$DKK_CurrencyName} {displayPrice price=$DKK_Total currency=$DKK_CurrencyId}</b>)</i>
             </a>
         </p>
     </div>

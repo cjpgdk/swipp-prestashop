@@ -23,6 +23,6 @@
 <p class="payment_module">
     <a href="{$this_path_ssl}payment.php" title="{l s='Pay by swipp' mod='swipp'}">
         <img src="{$this_path_bw}swipp.jpg" alt="{l s='Pay by swipp' mod='swipp'}" width="86" height="49"/>
-        {l s='Pay by mobilphone through swipp' mod='swipp'} <i>(<b>{$DKK_CurrencyName} {displayPrice price=$DKK_Total currency=$DKK_CurrencyId}</b>)</i
+        {l s='Pay by mobilphone through swipp' mod='swipp'} <i>(<b>{$DKK_CurrencyName} {displayPrice price=$DKK_Total currency=$DKK_CurrencyId}</b>)</i>
     </a>
 </p>

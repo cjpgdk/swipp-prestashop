@@ -38,9 +38,13 @@ class SwippPaymentModuleFrontController extends ModuleFrontController {
         if (!$this->module->checkCurrency($cart))
             Tools::redirect('index.php?controller=order');
 
+        $dkkC = new Currency(Currency::getIdByIsoCode('DKK'));
         $this->context->smarty->assign(array(
             'nbProducts' => $cart->nbProducts(),
             'cust_currency' => $cart->id_currency,
+            'name_currency' => $dkkC->name,
+            'id_currency_accepted' => $dkkC->id,
+            'id_currency' => $cart->id_currency,
             'currencies' => $this->module->getCurrency((int) $cart->id_currency),
             'total' => $cart->getOrderTotal(true, Cart::BOTH),
             'this_path' => $this->module->getPathUri(),

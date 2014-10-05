@@ -2,7 +2,7 @@
 <module>
 	<name>swipp</name>
 	<displayName><![CDATA[Swipp]]></displayName>
-	<version><![CDATA[0.1.4]]></version>
+	<version><![CDATA[0.1.5]]></version>
 	<description><![CDATA[Accepter betalinger for dine produkter via swipp overf&oslash;rsel.]]></description>
 	<author><![CDATA[CMJ Scripter]]></author>
 	<tab><![CDATA[payments_gateways]]></tab>

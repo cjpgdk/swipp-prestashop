@@ -65,9 +65,9 @@
                 </p>
 
                 <h2>FAQ</h2>
-                <div>
-                    <a href="javascript:faqOpen('1');">Hvorfor er der tilføjet en note om betaling på faktura?</a>
-                    <p id="faqtxt_1" class="faqtxt">
+                <a href="javascript:faqOpen('1');">Hvorfor er der tilføjet en note om betaling på faktura?</a>
+                <div id="faqtxt_1" class="faqtxt">
+                    <p>
                         <a href="javascript:faqClose('1');">Luk</a><br /><br />
                         Der er tilføjet en note om betaling med swipp på fakutren da der i modulet er mulighed 
                         for at bruge flere valutatere vis din shop her mere end en valuta aktiv
@@ -82,6 +82,42 @@
                         <strong>5.</strong>: under denne overskriften kan du finde modulet Swipp og til højre for denne kan du vælge <i>" Unhook "</i><br />
                         <strong>6.</strong>: Det var det nu skulle modulet være fjernet fra all fakture der bliver genereret<br />
                         <img src="images/unhook-invoice.png" />
+                    </p>
+                </div>
+                <hr />
+                <a href="javascript:faqOpen('2');">Hvorfor er der ordre total på betal med Swipp?</a>
+                <div id="faqtxt_2" class="faqtxt">
+                    <a href="javascript:faqClose('2');">Luk</a>
+                    <p>
+                        Der er tilføjet en parentes med ordre total på Swipp fordi der kan bruges flere valutare
+                        internt i shoppen men da Swipp kun er til danske banke vil der i langt de fleste tilfælde 
+                        kun acceptere Danske Kroner, som så demonstreres på den måde<br />
+                        <img src="images/SwippPaymentBtn.png" /><br />
+                        <strong>hvordan fjerner jeg den?</strong><br />
+                        du kan fjerne den ved at til rette filen<br />
+                    </p>
+                    <pre>"modules/swipp/views/templates/hook/payment_[1.6].tpl"</pre><br />
+                    <p>
+                        og ændre linjen
+                    </p>
+                    <pre>"{l s='Pay by mobilphone through swipp' mod='swipp'} &lt;i>(&lt;b>{$DKK_CurrencyName} {displayPrice price=$DKK_Total currency=$DKK_CurrencyId}&lt;/b>)&lt;/i>&lt;/a>&lt;/p>&lt;/div>&lt;/div>"</pre><br />
+                    <p>
+                        Til
+                    </p>
+                    <pre>"{l s='Pay by mobilphone through swipp' mod='swipp'} &lt;/a>&lt;/p>&lt;/div>&lt;/div>"</pre><br />
+                    <p>
+                        <img src="images/SwippPaymentBtn2.png" />
+                    </p>
+                </div>
+                <hr />
+                <a href="javascript:faqOpen('3');">Hvorfor er der så mange stavefejl?</a>
+                <div id="faqtxt_3" class="faqtxt">
+                    <a href="javascript:faqClose('3');">Luk</a>
+                    <p>
+                        va ska ar sig, jeg skrper ikke så god..!<br />
+                        ej, jeg bruger ikke tid på stavningen når jeg koder det er op til den 
+                        eller de personer der bruger det at rette stavningen ligesom du gjorde da
+                        du satte din webshop for første gang.!
                     </p>
                 </div>
             </section>

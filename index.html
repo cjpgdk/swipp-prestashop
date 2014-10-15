@@ -6,6 +6,14 @@
         <meta name="description" content="Swipp Modul til Prestashop 1.4, 1.5 og 1.6 : Accepter betalinger med swipp">
         <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
         <title>Swipp Modul til Prestashop 1.4, 1.5 og 1.6</title>
+        <script type="text/javascript">
+            function faqOpen(index) {
+                document.getElementById('faqtxt_' + index).style.display = "block";
+            }
+            function faqClose(index) {
+                document.getElementById('faqtxt_' + index).style.display = "none";
+            }
+        </script>
     </head>
     <body>
         <!-- HEADER -->
@@ -43,7 +51,7 @@
                 <p>
                     Er du derimod en af dem der vil lave alt selv, ændre i koden ogsv.. kan du lave en <a href="https://github.com/cmjnisse/swipp-prestashop/pulls">Pull Requests</a>, klone det via Git, uanset hvordan du gør er du velkommen til at gøre det
                 </p>
-                
+
                 <h2>Hjælp, Problemer med modulet og så videre</h2>
                 <p>
                     skulle det ske at du har problemer med modulet eller gerne vil have noget tilføjet/integreret
@@ -55,6 +63,27 @@
                     forklaringer som bedst gør sig som en "formateret mail" er der en mailadresse i toppen af 
                     alle filerne som tilhøre dette modul den kan du da skrive til
                 </p>
+
+                <h2>FAQ</h2>
+                <div>
+                    <a href="javascript:faqOpen('1');">Hvorfor er der tilføjet en note om betaling på faktura?</a>
+                    <p id="faqtxt_1" class="faqtxt">
+                        <a href="javascript:faqClose('1');">Luk</a><br /><br />
+                        Der er tilføjet en note om betaling med swipp på fakutren da der i modulet er mulighed 
+                        for at bruge flere valutatere vis din shop her mere end en valuta aktiv
+                        og dermed give en note om at kun betaling med danske kroner er accepteret.<br /><br />
+                        <strong>hvordan fjerner jeg den?</strong><br />
+                        det er faktisk simpelt i prestashop har du muligheden for at fjerne moduler fra deres
+                        aktive kroge.<br />
+                        <strong>1.</strong>: inde i administrationen under moduler er der et menu punkt kaldet positioner<br />
+                        <strong>2.</strong>: herinde kan du så fjerne alle de moduler som du vil fra de kroge/steder i din shop hvor du ikke vil have disse til at være<br />
+                        <strong>3.</strong>: i toppen af siden skal du klikke på afkrydsningsfeltet <i>" Vis hooks uden position "</i><br />
+                        <strong>4.</strong>: her efter når siden er blevet genindlæst, lokaliser da overskriften <i>" displayPDFInvoice "</i><br />
+                        <strong>5.</strong>: under denne overskriften kan du finde modulet Swipp og til højre for denne kan du vælge <i>" Unhook "</i><br />
+                        <strong>6.</strong>: Det var det nu skulle modulet være fjernet fra all fakture der bliver genereret<br />
+                        <img src="images/unhook-invoice.png" />
+                    </p>
+                </div>
             </section>
         </div>
 

@@ -19,7 +19,7 @@
 *  @license http://www.gnu.org/copyleft/gpl.html GNU General Public License version 3
 *}
 <div class="row">
-    <div class="col-xs-12 col-md-12">
+    <div class="col-xs-12 col-md-6">
         <p class="payment_module">
             <a class="swipp" 
                 href="{$link->getModuleLink('swipp', 'payment')|escape:'html':'UTF-8'}" 

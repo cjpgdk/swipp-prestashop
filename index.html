@@ -5,15 +5,11 @@
         <meta http-equiv="X-UA-Compatible" content="chrome=1">
         <meta name="description" content="Swipp Modul til Prestashop 1.4, 1.5 og 1.6 : Accepter betalinger med swipp">
         <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+        <link rel="stylesheet" type="text/css" href="stylesheets/jquery.fancybox.css" media="screen" />
+        <script type="text/javascript" src="javascripts/jquery-1.10.2.min.js"></script>
+        <script type="text/javascript" src="javascripts/jquery.fancybox.pack.js"></script>
+        <script type="text/javascript" src="javascripts/main.js"></script>
         <title>Swipp Modul til Prestashop 1.4, 1.5 og 1.6</title>
-        <script type="text/javascript">
-            function faqOpen(index) {
-                document.getElementById('faqtxt_' + index).style.display = "block";
-            }
-            function faqClose(index) {
-                document.getElementById('faqtxt_' + index).style.display = "none";
-            }
-        </script>
     </head>
     <body>
         <!-- HEADER -->
@@ -46,7 +42,7 @@
                 <h3>Installere Modulet</h3>
                 <p>
                     For at installere modulet så simpelt som muligt skal du downloade den fil der heder "<i>swipp.zip</i>", 
-                    eller bare klikke på .zip mappen oppe til højre her på siden
+                    eller bare klikke på .zip mappen oppe til højre her på siden, hvorefter du så fra modul administrationen kan uploade og installere modulet
                 </p>
                 <p>
                     Er du derimod en af dem der vil lave alt selv, ændre i koden ogsv.. kan du lave en <a href="https://github.com/cmjnisse/swipp-prestashop/pulls">Pull Requests</a>, klone det via Git, uanset hvordan du gør er du velkommen til at gøre det
@@ -65,6 +61,32 @@
                 </p>
 
                 <h3>FAQ</h3>
+                <a href="javascript:faqOpen('11');">Betalings muligheden bliver ikke vist??</a>
+                <div id="faqtxt_11" class="faqtxt">
+                    <p>
+                        <a href="javascript:faqClose('11');">Luk</a><br /><br />
+						Der kan være flere grunde til at modulet ikke bliver vist.<br /><br />
+                        <strong>1.</strong>: Du skal måske tømme din cache under ydelse i administrationen!<br />
+                        <strong>2.</strong>: Du har ikke valgt at Swipp som betalingsmulighed der er til gængelig under "Moduler=>Betaling" <br />
+                        <a class="fancybox"
+                           href="images/help/module-payment-link.png"
+                           data-fancybox-group="gallery"
+                           title="Moduler=>Betaling">
+                               <img src="images/help/module-payment-link.png" alt="Moduler=>Betaling img" />
+                        </a><br />
+						<br />
+                        <strong>3.</strong>: Du har ikke sat Dansk Krone som valuta korrekt op under "Lokalisering=>Valutaer" "Det er vigtigt at ISO Koderne står rigtigt"<br />
+                        <a class="fancybox"
+                           href="images/help/dkk-valuta.png"
+                           data-fancybox-group="gallery"
+                           title="Lokalisering=>Valutaer danske kroner setup">
+                               <img src="images/help/dkk-valuta.png" alt="Lokalisering=>Valutaer img" />
+                        </a><br />
+						<br />
+                        <strong>4.</strong>: Værdierne inde i modulets administration skal være udfyldt<br />
+                    </p>
+                </div>
+                <hr />
                 <a href="javascript:faqOpen('1');">Hvorfor er der tilføjet en note om betaling på faktura?</a>
                 <div id="faqtxt_1" class="faqtxt">
                     <p>
@@ -81,6 +103,7 @@
                         <strong>4.</strong>: her efter når siden er blevet genindlæst, lokaliser da overskriften <i>" displayPDFInvoice "</i><br />
                         <strong>5.</strong>: under denne overskriften kan du finde modulet Swipp og til højre for denne kan du vælge <i>" Unhook "</i><br />
                         <strong>6.</strong>: Det var det nu skulle modulet være fjernet fra all fakture der bliver genereret<br />
+
                         <img src="images/unhook-invoice.png" />
                     </p>
                 </div>
@@ -120,7 +143,75 @@
                         du satte din webshop op for første gang.!
                     </p>
                 </div>
-
+                <h3>Billeder skal du så ikke snydes for.</h3>
+				<p>
+                    <a class="fancybox"
+                       href="images/img/std-checkout_14.png"
+                       data-fancybox-group="gallery"
+                       title="Betalings muligheder (Prestashop 1.4)">
+                        <img src="images/img/std-checkout_14-small.png" alt="" />
+                    </a>&nbsp;&nbsp;
+                    <a class="fancybox"
+                       href="images/img/confirm_14.png"
+                       data-fancybox-group="gallery"
+                       title="Bekræft Ordre (Prestashop 1.4)">
+                        <img src="images/img/confirm_14-small.png" alt="" />
+                    </a>&nbsp;&nbsp;
+                    <a class="fancybox"
+                       href="images/img/complete_14.png"
+                       data-fancybox-group="gallery"
+                       title="Ordre gennemført (Prestashop 1.4)">
+                        <img src="images/img/complete_14-small.png" alt="" />
+                    </a>
+					<br />
+					<br />
+                    <a class="fancybox"
+                       href="images/img/std-checkout_15.png"
+                       data-fancybox-group="gallery"
+                       title="Betalings muligheder (Prestashop 1.5)">
+                        <img src="images/img/std-checkout_15-small.png" alt="" />
+                    </a>&nbsp;&nbsp;
+                    <a class="fancybox"
+                       href="images/img/confirm_15.png"
+                       data-fancybox-group="gallery"
+                       title="Bekræft Ordre (Prestashop 1.5)">
+                        <img src="images/img/confirm_15-small.png" alt="" />
+                    </a>&nbsp;&nbsp;
+                    <a class="fancybox"
+                       href="images/img/complete_15.png"
+                       data-fancybox-group="gallery"
+                       title="Ordre gennemført (Prestashop 1.5)">
+                        <img src="images/img/complete_15-small.png" alt="" />
+                    </a>
+					<br />
+					<br />
+                    <a class="fancybox"
+                       href="images/img/std-checkout.png"
+                       data-fancybox-group="gallery"
+                       title="Betalings muligheder (Prestashop 1.6)">
+                        <img src="images/img/std-checkout-small.png" alt="" />
+                    </a>&nbsp;&nbsp;
+                    <a class="fancybox"
+                       href="images/img/confirm.png"
+                       data-fancybox-group="gallery"
+                       title="Bekræft Ordre (Prestashop 1.6)">
+                        <img src="images/img/confirm-small.png" alt="" />
+                    </a>&nbsp;&nbsp;
+                    <a class="fancybox"
+                       href="images/img/complete.png"
+                       data-fancybox-group="gallery"
+                       title="Ordre gennemført (Prestashop 1.6)">
+                        <img src="images/img/complete-small.png" alt="" />
+                    </a>
+					<br />
+					<strong>og til dem der bruger <a href="http://canin.sk/prestashop/presta-modules/24-one-page-checkout.html">One Page Checkout af Peter Sliacky</a></strong>
+                    <a class="fancybox"
+                       href="images/img/OPC-modul.png"
+                       data-fancybox-group="gallery"
+                       title="Ordre Oversigt - One Page Checkout af Peter Sliacky (Prestashop 1.6)">
+                        <img src="images/img/OPC-modul.png" alt="" />
+                    </a>
+				</p>
                 <h3>Licens</h3>
                 <p>
                     <a href="http://www.gnu.org/copyleft/gpl.html">GNU General Public License version 3</a>

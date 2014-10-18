@@ -380,36 +380,24 @@
 										{if isset($value.p) && $value.p}<p class="help-block">{$value.p}</p>{/if}
 									{/foreach}
 								{elseif $input.type == 'switch'}
-									<span class="switch prestashop-switch fixed-width-lg">
-										{foreach $input.values as $value}
-										<input
-											type="radio"
-											name="{$input.name}"
-											{if $value.value == 1}
-												id="{$input.name}_on"
-											{else}
-												id="{$input.name}_off"
-											{/if}
-											value="{$value.value}"
-											{if $fields_value[$input.name] == $value.value}checked="checked"{/if}
-											{if isset($input.disabled) && $input.disabled}disabled="disabled"{/if}
-										/>
-										<label
-											{if $value.value == 1}
-												for="{$input.name}_on"
-											{else}
-												for="{$input.name}_off"
-											{/if}
-										>
-											{if $value.value == 1}
-												{l s='Yes'}
-											{else}
-												{l s='No'}
-											{/if}
-										</label>
-										{/foreach}
-										<a class="slide-button btn"></a>
-									</span>
+		{foreach $input.values as $value}
+			<input type="radio" name="{$input.name}" id="{$value.id}" value="{$value.value|escape:'html':'UTF-8'}"
+					{if $fields_value[$input.name] == $value.value}checked="checked"{/if}
+					{if isset($input.disabled) && $input.disabled}disabled="disabled"{/if} />
+			<label class="t" for="{$value.id}">
+			 {if isset($input.is_bool) && $input.is_bool == true}
+				{if $value.value == 1}
+					<img src="../img/admin/enabled.gif" alt="{$value.label}" title="{$value.label}" />
+				{else}
+					<img src="../img/admin/disabled.gif" alt="{$value.label}" title="{$value.label}" />
+				{/if}
+			 {else}
+				{$value.label}
+			 {/if}
+			</label>
+			{if isset($input.br) && $input.br}<br />{/if}
+			{if isset($value.p) && $value.p}<p>{$value.p}</p>{/if}
+		{/foreach}
 								{elseif $input.type == 'textarea'}
 									{assign var=use_textarea_autosize value=true}
 									{if isset($input.lang) AND $input.lang}
@@ -462,8 +450,7 @@
 									{/if}
 									{foreach $input.values.query as $value}
 										{assign var=id_checkbox value=$input.name|cat:'_'|cat:$value[$input.values.id]}
-										<div class="checkbox{if isset($input.expand) && $input.expand.default == 'show'} hidden {/if}">
-											<label for="{$id_checkbox}">
+											<label for="{$id_checkbox}"  style="float: none;display:block">
 												<input type="checkbox"
 													name="{$id_checkbox}"
 													id="{$id_checkbox}"
@@ -472,7 +459,6 @@
 													{if isset($fields_value[$id_checkbox]) && $fields_value[$id_checkbox]}checked="checked"{/if} />
 												{$value[$input.values.name]}
 											</label>
-										</div>
 									{/foreach}
 								{elseif $input.type == 'free'}
 									{$fields_value[$input.name]}

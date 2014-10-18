@@ -1,9 +1,8 @@
-/* 
-    Created on : 15-06-2014, 06:40:10
-    Author     : Christian
-    Since      : Prestashop 1.6
-*/
-    
-p.payment_module a.swipp {
-    background: url("../images/swipp.jpg") no-repeat scroll 15px 20px #FBFBFB;
+/* 
+    Created on : 15-06-2014, 06:40:10
+    Author     : Christian
+    Since      : Prestashop 1.6
+*/
+p.payment_module a.swipp {
+    background: url("../images/swipp.jpg") no-repeat scroll 15px 20px #FBFBFB;
 }

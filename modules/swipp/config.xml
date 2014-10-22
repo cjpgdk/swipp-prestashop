@@ -2,9 +2,9 @@
 <module>
 	<name>swipp</name>
 	<displayName><![CDATA[Swipp]]></displayName>
-	<version><![CDATA[0.1.5]]></version>
+	<version><![CDATA[0.1.6]]></version>
 	<description><![CDATA[Accept payments for your products via swipp transfer.]]></description>
-	<author><![CDATA[CMJ Scripter]]></author>
+	<author><![CDATA[Christian Jensen]]></author>
 	<tab><![CDATA[payments_gateways]]></tab>
 	<confirmUninstall>Are you sure about removing these details?</confirmUninstall>
 	<is_configurable>1</is_configurable>

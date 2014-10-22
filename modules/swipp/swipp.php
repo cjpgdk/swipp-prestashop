@@ -461,6 +461,10 @@ class Swipp extends PaymentModule {
         );
 
         $helper = new HelperForm();
+        if (_PS_VERSION_ < '1.6') {
+            $helper->base_folder = dirname(__FILE__) . '/views/templates/helpers/form/';
+            $helper->base_tpl = 'form.tpl';
+        }
         $helper->show_toolbar = false;
         $helper->table = $this->table;
         $lang = new Language((int) Configuration::get('PS_LANG_DEFAULT'));

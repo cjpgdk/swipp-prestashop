@@ -36,8 +36,8 @@ class Swipp extends PaymentModule {
     public function __construct($name = null, $context = null) {
         $this->name = 'swipp';
         $this->tab = 'payments_gateways';
-        $this->version = '0.1.5';
-        $this->author = 'CMJ Scripter';
+        $this->version = '0.1.6';
+        $this->author = 'Christian Jensen';
         $this->controllers = array('payment', 'validation');
         $this->currencies = true;
         $this->currencies_mode = 'checkbox';
@@ -238,9 +238,9 @@ class Swipp extends PaymentModule {
         Configuration::updateValue('SWIPP_PAYMENT_STATE', $SwippOrder->id);
         copy(dirname(__FILE__) . '/logo.gif', _PS_IMG_DIR_ . 'os/' . $SwippOrder->id . '.gif');
 
-        Configuration::updateValue('SWIPP_MAX_AMOUNT', 3000.00);
+        Configuration::updateValue('SWIPP_MAX_AMOUNT', 10000.00);
         Configuration::updateValue('SWIPP_SHOW_CONVERTED', 0);
-            Configuration::updateValue('SWIPP_SHOW_INVIOCE', 0);
+        Configuration::updateValue('SWIPP_SHOW_INVIOCE', 0);
 
         $copy_files_dir = dirname(__FILE__) . '/_copy_files/';
         // danish mails tmpls

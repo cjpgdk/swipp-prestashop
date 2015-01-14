@@ -20,12 +20,12 @@
 *}
 
 {capture name=path}{l s='Swipp payment' mod='swipp'}{/capture}
-{include file="$tpl_dir./breadcrumb.tpl"}
+{include file=$tpl_dir./breadcrumb.tpl}
 
 <h2>{l s='Order summary' mod='swipp'}</h2>
 
 {assign var='current_step' value='payment'}
-{include file="$tpl_dir./order-steps.tpl"}
+{include file=$tpl_dir./order-steps.tpl}
 
 {if $nbProducts <= 0}
     <p class="warning">{l s='Your shopping cart is empty.'}</p>
@@ -47,8 +47,19 @@
         </p>
         <p>
             -
-            {l s='We accept the following currency to be sent by swipp mobile transfer:' mod='swipp'}&nbsp;<b>{$name_currency}</b>
-            <input type="hidden" name="currency_payement" value="{$id_currency}" />
+            {if $currencies|@count > 1}
+                {l s='We accept the following currency to be sent by swipp mobile transfer:' mod='swipp'}
+                <br /><br />
+                {l s='Choose one of the following:' mod='swipp'}
+                <select id="currency_payement" name="currency_payement" onchange="setCurrency($('#currency_payement').val());">
+                    {foreach from=$currencies item=currency}
+                        <option value="{$currency.id_currency}" {if $currency.id_currency == $cust_currency}selected="selected"{/if}>{$currency.name}</option>
+                    {/foreach}
+                </select>
+            {else}
+                {l s='The total amount of your order is' mod='swipp'}&nbsp;<b>{$currencies.0.name}</b>
+                <input type="hidden" name="currency_payement" value="{$currencies.0.id_currency}" />
+            {/if}
         </p>
         <p>
             {l s='Swipp account information will be displayed on the next page.' mod='swipp'}
@@ -56,8 +67,8 @@
             <b>{l s='Please confirm your order by clicking \'I confirm my order\'' mod='swipp'}.</b>
         </p>
         <p class="cart_navigation">
-            <a href="{$link->getPageLink('order.php', true)}?step=3" class="button_large hideOnSubmit">{l s='Other payment methods' mod='swipp'}</a>
-            <input type="submit" name="submit" value="{l s='I confirm my order' mod='swipp'}" class="exclusive_large hideOnSubmit" />
+            <a href="{$link->getPageLink('order.php', true)}?step=3" class="button_large">{l s='Other payment methods' mod='swipp'}</a>
+            <input type="submit" name="submit" value="{l s='I confirm my order' mod='swipp'}" class="exclusive_large" />
         </p>
     </form>
 {/if}

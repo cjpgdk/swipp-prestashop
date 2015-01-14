@@ -1,0 +1,25 @@
+Hi {firstname} {lastname},
+
+Tak forde du handlede hos {shop_name}! 
+
+Din ordre med reference {order_name} er blevet godgendt
+og vil bilve sendt så snart vi har modtaget din betaling. 
+
+Du har valgt at betale med swipp
+
+Her er detaljerne for din swipp
+
+Konto navn: {swipp_owner}
+
+Konto telefon: {swipp_phone}
+
+Ordre total: {total_paid}
+
+Du kan se din ordre og downloade din faktura i "Order history" under din konto ved at klikke på "My account" på vores hjemmeside.
+
+Tak for handle på {shop_name}.
+
+{shop_name} - {shop_url}
+
+
+{shop_url} powered by PrestaShopâ„¢

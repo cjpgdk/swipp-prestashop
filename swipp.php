@@ -222,18 +222,17 @@ class swipp extends PaymentModule {
         return $this->display(__FILE__, 'payment_execution.tpl');
     }
 
-    public function hookPaymentReturn($params) {
+    public function hookpaymentReturn($params) {
         if (!$this->active)
             return;
 
         global $smarty;
         $state = $params['objOrder']->getCurrentState();
-        if ($state == _PS_OS_BANKWIRE_ OR $state == _PS_OS_OUTOFSTOCK_)
+        if ($state == (int)Configuration::get("SWIPP_ORDERSTATEID") || $state == _PS_OS_BANKWIRE_ || $state == _PS_OS_OUTOFSTOCK_)
             $smarty->assign(array(
                 'total_to_pay' => Tools::displayPrice($params['total_to_pay'], $params['currencyObj'], false, false),
-                'bankwireDetails' => nl2br2($this->details),
-                'bankwireAddress' => nl2br2($this->address),
-                'bankwireOwner' => $this->owner,
+                'swippOwner' => @$this->_config['SWIPP_OWNER'],
+                'swippPhone' => @$this->_config['SWIPP_PHONE'],
                 'status' => 'ok',
                 'id_order' => $params['objOrder']->id
             ));

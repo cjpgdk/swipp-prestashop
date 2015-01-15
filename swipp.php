@@ -229,7 +229,7 @@ class swipp extends PaymentModule {
 
         global $smarty;
         $state = $params['objOrder']->getCurrentState();
-        if ($state == (int) Configuration::get("SWIPP_ORDERSTATEID") || $state == _PS_OS_BANKWIRE_ || $state == _PS_OS_OUTOFSTOCK_)
+        if ($state == (int) Configuration::get("SWIPP_ORDERSTATEID") || $state == (int) Configuration::get("SWIPP_PAYMENT_STATE") || $state == _PS_OS_BANKWIRE_ || $state == _PS_OS_OUTOFSTOCK_)
             $smarty->assign(array(
                 'total_to_pay' => Tools::displayPrice($params['total_to_pay'], $params['currencyObj'], false, false),
                 'swippOwner' => @$this->_config['SWIPP_OWNER'],

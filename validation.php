@@ -29,27 +29,28 @@ if (!class_exists('swipp', false))
 
 $swipp = new swipp();
 
-if ($cart->id_customer == 0 OR $cart->id_address_delivery == 0 OR $cart->id_address_invoice == 0 OR !$swipp->active)
-	Tools::redirectLink(__PS_BASE_URI__.'order.php?step=1');
+if ($cart->id_customer == 0 OR $cart->id_address_delivery == 0 OR $cart->id_address_invoice == 0 OR ! $swipp->active)
+    Tools::redirectLink(__PS_BASE_URI__ . 'order.php?step=1');
 
 // Check that this payment option is still available in case the customer changed his address just before the end of the checkout process
-$authorized = false;
-foreach (Module::getPaymentModules() as $module)
-	if ($module['name'] == 'bankwire')
-	{
-		$authorized = true;
-		break;
-	}
-if (!$authorized)
-	die(Tools::displayError('This payment method is not available.'));
-	
-$customer = new Customer((int)$cart->id_customer);
+if (method_exists('Module', 'getPaymentModules')) {
+    $authorized = false;
+    foreach (Module::getPaymentModules() as $module)
+        if ($module['name'] == 'bankwire') {
+            $authorized = true;
+            break;
+        }
+    if (!$authorized)
+        die(Tools::displayError('This payment method is not available.'));
+}
+
+$customer = new Customer((int) $cart->id_customer);
 
 if (!Validate::isLoadedObject($customer))
-	Tools::redirectLink(__PS_BASE_URI__.'order.php?step=1');
+    Tools::redirectLink(__PS_BASE_URI__ . 'order.php?step=1');
 
 $currency = new Currency(Tools::getValue('currency_payement', false) ? Tools::getValue('currency_payement') : $cookie->id_currency);
-$total = (float)($cart->getOrderTotal(true, Cart::BOTH));
+$total = (float) ($cart->getOrderTotal(true, 3));
 
 $mailVars = $swipp->extra_mail_vars;
 
@@ -57,6 +58,6 @@ $SWIPP_ORDERSTATEID = Configuration::get("SWIPP_ORDERSTATEID");
 if(!$SWIPP_ORDERSTATEID || $SWIPP_ORDERSTATEID<0)
     $SWIPP_ORDERSTATEID = Configuration::get('SWIPP_PAYMENT_STATE');
 
-$swipp->validateOrder($cart->id, ($SWIPP_ORDERSTATEID > 0 ? $SWIPP_ORDERSTATEID : Configuration::get('PS_OS_BANKWIRE')), $total, $swipp->displayName, NULL, $mailVars, $currency->id);
+$swipp->validateOrder($cart->id, ($SWIPP_ORDERSTATEID > 0 ? $SWIPP_ORDERSTATEID : Configuration::get('PS_OS_BANKWIRE')), $total, $swipp->displayName, NULL, $mailVars, (int)$currency->id, false, $customer->secure_key);
 $order = new Order($swipp->currentOrder);
-Tools::redirectLink(__PS_BASE_URI__.'order-confirmation.php?id_cart='.$cart->id.'&id_module='.$swipp->id.'&id_order='.$swipp->currentOrder.'&key='.$customer->secure_key);
+Tools::redirectLink(__PS_BASE_URI__ . 'order-confirmation.php?id_cart=' . $cart->id . '&id_module=' . $swipp->id . '&id_order=' . $swipp->currentOrder . '&key=' . $customer->secure_key);

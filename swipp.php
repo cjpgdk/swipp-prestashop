@@ -33,7 +33,7 @@ class Swipp extends PaymentModule {
     public function __construct($name = null, $context = null) {
         $this->name = 'swipp';
         $this->tab = 'payments_gateways';
-        $this->version = '0.1.6';
+        $this->version = '0.2';
         $this->author = 'Christian Jensen';
         $this->controllers = array('payment', 'validation');
         $this->currencies = true;

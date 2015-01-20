@@ -49,11 +49,11 @@ class SwippPaymentModuleFrontController extends ModuleFrontController {
             'this_path_ssl' => Tools::getShopDomainSsl(true, true) . __PS_BASE_URI__ . 'modules/' . $this->module->name . '/'
         ));
 
-        if (version_compare(_PS_VERSION_, '1.6.0.0', '>=')) {
-            $this->setTemplate('payment_execution_1.6.tpl');
-        } elseif (version_compare(_PS_VERSION_, '1.5.0.0', '>=')) {
+        if (version_compare(_PS_VERSION_, '1.5.0.5', '>='))
             $this->setTemplate('payment_execution.tpl');
-        }
+        else
+            $this->setTemplate('views/templates/hook/payment_execution.tpl');
+        
     }
 
 }

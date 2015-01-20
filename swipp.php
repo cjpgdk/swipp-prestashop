@@ -81,7 +81,10 @@ class Swipp extends PaymentModule {
         else
             $this->smarty->assign('status', 'failed');
 
-        return $this->display(__FILE__, 'payment_return.tpl');
+        if (version_compare(_PS_VERSION_, '1.5.0.5', '>='))
+            return $this->display(__FILE__, 'payment_return.tpl');
+        else
+            return $this->display(__FILE__, 'views/templates/hook/payment_return.tpl');
     }
 
     public function hookPayment($params) {
@@ -108,7 +111,10 @@ class Swipp extends PaymentModule {
             'this_path' => $this->_path,
             'this_path_ssl' => Tools::getHttpHost(true, true) . __PS_BASE_URI__ . 'modules/' . $this->name . '/'
         ));
-        return $this->display(__FILE__, 'payment.tpl');
+        if (version_compare(_PS_VERSION_, '1.5.0.5', '>='))
+            return $this->display(__FILE__, 'payment.tpl');
+        else
+            return $this->display(__FILE__, 'views/templates/hook/payment.tpl');
     }
 
     /* ## INSTALL / UNINJSTALL ## */
@@ -242,7 +248,11 @@ class Swipp extends PaymentModule {
                     $this->_html .= $this->displayError($err);
         } else
             $this->_html .= '<br />';
-        $this->_html .= $this->display(__FILE__, 'infos.tpl');
+
+        if (version_compare(_PS_VERSION_, '1.5.0.5', '>='))
+            $this->_html .= $this->display(__FILE__, 'infos.tpl');
+        else
+            $this->_html .= $this->display(__FILE__, 'views/templates/hook/infos.tpl');
         $this->_html .= $this->renderForm();
         return $this->_html;
     }
@@ -365,33 +375,6 @@ class Swipp extends PaymentModule {
     }
 
     /* ## HELPER FUNCTION ## */
-
-//    /**
-//     * Method to exec payment hook from prestashop version 1.4
-//     * @global Cookie $cookie
-//     * @global Smarty $smarty
-//     * @param Cart $cart
-//     * @return string
-//     */
-//    public function execPayment($cart) {
-//        if (!$this->active)
-//            return;
-//        if (!$this->checkCurrency($cart))
-//            Tools::redirectLink(__PS_BASE_URI__ . 'order.php');
-//        global $cookie, $smarty;
-//        $dkkC = new Currency(Currency::getIdByIsoCode('DKK'));
-//        $smarty->assign(array(
-//            'nbProducts' => $cart->nbProducts(),
-//            'cust_currency' => $cart->id_currency,
-//            'name_currency' => $dkkC->name,
-//            'id_currency_accepted' => $dkkC->id,
-//            'id_currency' => $cart->id_currency,
-//            'total' => $this->__getPriceDkk($cart),
-//            'this_path' => $this->_path,
-//            'this_path_ssl' => Tools::getShopDomainSsl(true, true) . __PS_BASE_URI__ . ((int) Configuration::get('PS_REWRITING_SETTINGS') && count(Language::getLanguages()) > 1 && isset($smarty->ps_language) && !empty($smarty->ps_language) ? $smarty->ps_language->iso_code . '/' : '') . 'modules/' . $this->name . '/'
-//        ));
-//        return $this->display(__FILE__, 'payment_execution.tpl');
-//    }
 
     /**
      * check currency is accepted

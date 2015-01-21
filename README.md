@@ -4,6 +4,8 @@ for prestashop 1.5
 
 official download of Prestashop 1.5.0.1 can't function as stable shop (FOR ME) so not tested AND NOT SUPPORTED!
 
+if updating the module, you may need to uninstall the mudule and install it again
+
 ###Tested on
 
 	Prestashop 1.5.0.2

@@ -18,10 +18,14 @@
 *  @copyright 2014 Christian M. Jensen
 *  @license http://www.gnu.org/copyleft/gpl.html GNU General Public License version 3
 *}
-
-<p class="payment_module">
-    <a href="{$link->getModuleLink('swipp', 'payment')|escape:'html'}" title="{l s='Pay by swipp' mod='swipp'}">
-        <img src="{$this_path_bw}swipp.jpg" alt="{l s='Pay by swipp' mod='swipp'}" width="86" height="49"/>
-        {l s='Pay by mobilphone through swipp' mod='swipp'} {if $SWIPP_SHOW_CONVERTED}<i>(<b>{$DKK_CurrencyName} {displayPrice price=$DKK_Total currency=$DKK_CurrencyId}</b>)</i>{/if}
-    </a>
-</p>
+<div class="row">
+    <div class="col-xs-12 col-md-6">
+        <p class="payment_module">
+            <a class="swipp" 
+                href="{$link->getModuleLink('swipp', 'payment')|escape:'html':'UTF-8'}" 
+                title="{l s='Pay by mobilphone through swipp' mod='swipp'}">
+                {l s='Pay by mobilphone through swipp' mod='swipp'} {if $SWIPP_SHOW_CONVERTED}<i>(<b>{$DKK_CurrencyName} {displayPrice price=$DKK_Total currency=$DKK_CurrencyId}</b>)</i>{/if}
+            </a>
+        </p>
+    </div>
+</div>

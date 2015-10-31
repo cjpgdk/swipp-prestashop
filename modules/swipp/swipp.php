@@ -22,54 +22,45 @@ if (!defined('_PS_VERSION_'))
  *  @copyright 2014 Christian M. Jensen
  *  @license http://www.gnu.org/copyleft/gpl.html GNU General Public License version 3
  */
-/* Backward compatibility */
-if (_PS_VERSION_ < '1.5') {
-    if (version_compare(_PS_VERSION_, '1.4.5.1', '<=')) {
-        include _PS_ROOT_DIR_ . '/modules/swipp/backward_compatibility/global.php';
-    } else {
-        require_once dirname(__FILE__) . '/backward_compatibility/global.php';
-    }
-}
 
 class Swipp extends PaymentModule {
 
     public function __construct($name = null, $context = null) {
         $this->name = 'swipp';
         $this->tab = 'payments_gateways';
-        $this->version = '0.1.6';
+        $this->version = '0.2';
         $this->author = 'Christian Jensen';
+
         $this->controllers = array('payment', 'validation');
+
         $this->currencies = true;
         $this->currencies_mode = 'checkbox';
-        $this->SWIPP_PHONE = Configuration::get('SWIPP_PHONE');
-        $this->SWIPP_OWNER = Configuration::get('SWIPP_OWNER');
+        $this->is_eu_compatible = 1;
+
         $this->bootstrap = true;
-        if (_PS_VERSION_ < '1.5' && _PS_VERSION_ > '1.3')
-            parent::__construct($name);
-        /* Prestashop 1.5 and up implements "$context" */
-        if (_PS_VERSION_ >= '1.5')
-            parent::__construct($name, ($context instanceof Context ? $context : NULL));
+
+        parent::__construct($name, ($context instanceof Context ? $context : NULL));
+
         $this->displayName = 'Swipp';
         $this->description = $this->l('Accept payments for your products via swipp transfer.');
         $this->confirmUninstall = $this->l('Are you sure about removing these details?');
-        if (!isset($this->SWIPP_PHONE) || empty($this->SWIPP_PHONE))
-            $this->warning = $this->l('Swipp phone number must be configured before using this module.');
-        if (!isset($this->SWIPP_OWNER) || empty($this->SWIPP_OWNER))
-            $this->warning .= $this->l('Swipp owner/user must be configured before using this module.');
-        $this->extra_mail_vars = array(
-            '{swipp_owner}' => $this->SWIPP_OWNER,
-            '{swipp_phone}' => $this->SWIPP_PHONE,
-        );
-        /* Backward compatibility */
 
-        if (_PS_VERSION_ < '1.5') {
-            if (version_compare(_PS_VERSION_, '1.4.5.1', '<=')) {
-                include _PS_ROOT_DIR_ . '/modules/swipp/backward_compatibility/backward.php';
-            } else {
-                require dirname(__FILE__) . '/backward_compatibility/backward.php';
-            }
-        }
-        $this->_active = true;
+        $this->SwippPhone = Configuration::get('SWIPP_PHONE');
+        $this->SwippOwner = Configuration::get('SWIPP_OWNER');
+
+        $this->_html = "";
+
+        if (!isset($this->SwippPhone) || empty($this->SwippPhone))
+            $this->warning .= (!empty($this->warning) ? '<br/>' : '') . $this->l('Swipp phone number must be configured before using this module.');
+        if (!isset($this->SwippOwner) || empty($this->SwippOwner))
+            $this->warning .= (!empty($this->warning) ? '<br/>' : '') . $this->l('Swipp owner/user must be configured before using this module.');
+
+        $this->extra_mail_vars = array(
+            '{swipp_phone}' => $this->SwippPhone,
+            '{swipp_owner}' => $this->SwippOwner,
+        );
+
+        $this->_active = $this->active;
         $dkkC_id = Currency::getIdByIsoCode('DKK');
         if (Validate::isInt($dkkC_id)) {
             $dkkC = new Currency($dkkC_id);
@@ -85,20 +76,42 @@ class Swipp extends PaymentModule {
 
     /* ## HOOKS ## */
 
+    public function hookDisplayPaymentEU($params) {
+        if (!$this->active)
+            return;
+
+        if (!$this->checkCurrency($params['cart']))
+            return;
+
+        $payment_options = array(
+            'cta_text' => $this->l('Pay by Swipp mobile payment'),
+            'logo' => Media::getMediaPath(_PS_MODULE_DIR_ . $this->name . '/swipp.jpg'),
+            'action' => $this->context->link->getModuleLink($this->name, 'validation', array(), true)
+        );
+
+        return $payment_options;
+    }
+
     public function hookPaymentReturn($params) {
         if (!$this->active)
             return;
         if (!$this->_active)
             return;
         $state = $params['objOrder']->getCurrentState();
-        if ($state == Configuration::get('SWIPP_PAYMENT_STATE') || $state == Configuration::get('PS_OS_OUTOFSTOCK')) {
+        $allowedOrderStates = array();
+        if (Configuration::hasKey('SWIPP_ORDER_STATES')) {
+            $allowedOrderStates = explode(',', Configuration::get('SWIPP_ORDER_STATES'));
+        }
+        if ($state == Configuration::get('SWIPP_PAYMENT_STATE') ||
+                $state == Configuration::get('PS_OS_OUTOFSTOCK') ||
+                in_array($state, $allowedOrderStates)) {
             $dkkC_id = Currency::getIdByIsoCode('DKK');
             $dkkC = new Currency($dkkC_id);
             $cart_total = $this->__getPriceDkk($params['objOrder'], 99);
             $this->smarty->assign(array(
                 'total_to_pay' => Tools::displayPrice($cart_total, $dkkC),
-                'swippOwner' => $this->SWIPP_OWNER,
-                'swippPhone' => $this->SWIPP_PHONE,
+                'swippOwner' => $this->SwippOwner,
+                'swippPhone' => $this->SwippPhone,
                 'status' => 'ok',
                 'id_order' => $params['objOrder']->id
             ));
@@ -108,13 +121,7 @@ class Swipp extends PaymentModule {
         } else {
             $this->smarty->assign('status', 'failed');
         }
-        if (version_compare(_PS_VERSION_, '1.6.0.0', '>=')) {
-            return $this->display(__FILE__, 'payment_return_1.6.tpl');
-        } elseif (version_compare(_PS_VERSION_, '1.5.0.0', '>=')) {
-            return $this->display(__FILE__, 'payment_return.tpl');
-        } elseif (version_compare(_PS_VERSION_, '1.4.0.0', '>=')) {
-            return $this->display(__FILE__, 'payment_return.tpl');
-        }
+        return $this->display(__FILE__, 'payment_return.tpl');
     }
 
     public function hookPayment($params) {
@@ -139,13 +146,7 @@ class Swipp extends PaymentModule {
             'DKK_CurrencyName' => $dkkC->name,
             'SWIPP_SHOW_CONVERTED' => (bool) Configuration::get('SWIPP_SHOW_CONVERTED'),
         ));
-        if (version_compare(_PS_VERSION_, '1.6.0.0', '>=')) {
-            return $this->display(__FILE__, 'payment_1.6.tpl');
-        } elseif (version_compare(_PS_VERSION_, '1.5.0.0', '>=')) {
-            return $this->display(__FILE__, 'payment.tpl');
-        } elseif (version_compare(_PS_VERSION_, '1.4.0.0', '>=')) {
-            return $this->display(__FILE__, 'payment.tpl');
-        }
+        return $this->display(__FILE__, 'payment.tpl');
     }
 
     /**
@@ -157,45 +158,25 @@ class Swipp extends PaymentModule {
         if (!(bool) Configuration::get('SWIPP_SHOW_INVIOCE')) {
             return "";
         }
-        $currency_txt = $this->l('Wee only accept Danish Krone through swipp[NL]Amount: %s[NL]');
-        $html = str_replace('[NL]', '<br />', sprintf($this->l('You have chosen to pay with swipp[NL]use the following infomation to compleate your order.[NL]Account name: %s[NL]Account phone: %s'), $this->SWIPP_OWNER, $this->SWIPP_PHONE));
-        if (version_compare(_PS_VERSION_, '1.5.0.0', '>=') && isset($params['object'])) {
+        if (isset($params['object'])) {
             $object = $params['object'];
             $order = new Order(intval($object->id_order));
-            if ($order->payment != $this->displayName)
-                return "";
+            if (strtolower($order->payment) != strtolower($this->displayName) && strtolower($order->payment) == strtolower($this->name))
+                return ""; /* not payment by this module. */
             $_order_currency = new Currency($order->id_currency);
+            $this->smarty->assign(array(
+                'SWIPP_CURRENCY_ISO_CODE' => strtoupper($_order_currency->iso_code),
+                'SWIPP_OWNER' => $this->SwippOwner,
+                'SWIPP_PHONE' => $this->SwippPhone,
+            ));
             if (strtoupper($_order_currency->iso_code) != "DKK") {
                 $dkkC = new Currency(Currency::getIdByIsoCode('DKK'));
                 $price = $this->__getPriceDkk($order, 99);
-                $html .= '<br />' . str_replace('[NL]', '<br />', sprintf($currency_txt, Tools::displayPrice($price, $dkkC)));
-                unset($_order_currency, $dkkC, $price, $_cart);
+                $this->smarty->assign(array('SWIPP_PRICE' => $this->SwippPhone));
+                unset($_order_currency, $dkkC, $price);
             }
-            unset($_order_currency);
-            if (isset($order) && strtolower($order->payment) == strtolower($this->name)) {
-                return $html;
-            }
-        } elseif (version_compare(_PS_VERSION_, '1.4.0.0', '>=') && isset($params['pdf']) && isset($params['id_order'])) {
-            $order = new Order(intval($params['id_order']));
-            if ($order->payment != $this->displayName)
-                return "";
-            $_order_currency = new Currency($order->id_currency);
-            if (strtoupper($_order_currency->iso_code) != "DKK") {
-                $dkkC = new Currency(Currency::getIdByIsoCode('DKK'));
-                $price = $this->__getPriceDkk($order, 99);
-                $html .= '<br />' . str_replace('[NL]', '<br />', sprintf($currency_txt, Tools::displayPrice($price, $dkkC)));
-                unset($_order_currency, $dkkC, $price, $_cart);
-            }
-            unset($_order_currency);
-            $pdf = $params['pdf'];
-            //$pdf = new PDF();
-            $_txt = explode('<br />', $html);
-            /* add empty cell for spacing */
-            $pdf->Ln(4);
-            foreach ($_txt as $key => $value) {
-                $pdf->Cell(0, 5, utf8_decode($value), 0, 0, 'L', 0);
-                $pdf->Ln(4);
-            }
+            //return $this->context->smarty->createTemplate($this->getTemplatePath('pdf.tpl'), null, null, $this->smarty);
+            return $this->display(__FILE__, 'pdf.tpl');
         }
         return "";
     }
@@ -233,6 +214,7 @@ class Swipp extends PaymentModule {
                 !$this->registerHook('payment') ||
                 !$this->registerHook('paymentReturn') ||
                 !$this->registerHook('PDFInvoice') ||
+                !$this->registerHook('displayPaymentEU') || 
                 !$this->registerHook('header'))
             return false;
         Configuration::updateValue('SWIPP_PAYMENT_STATE', $SwippOrder->id);
@@ -245,8 +227,10 @@ class Swipp extends PaymentModule {
         $copy_files_dir = dirname(__FILE__) . '/_copy_files/';
         // danish mails tmpls
         if (is_dir(_PS_MAIL_DIR_ . 'da')) {
-            copy($copy_files_dir . 'mails/da/swipp_payment.html', _PS_MAIL_DIR_ . 'da/swipp_payment.html');
-            copy($copy_files_dir . 'mails/da/swipp_payment.txt', _PS_MAIL_DIR_ . 'da/swipp_payment.txt');
+            if (!file_exists(_PS_MAIL_DIR_ . 'da/swipp_payment.html'))
+                copy($copy_files_dir . 'mails/da/swipp_payment.html', _PS_MAIL_DIR_ . 'da/swipp_payment.html');
+            if (!file_exists(_PS_MAIL_DIR_ . 'da/swipp_payment.txt'))
+                copy($copy_files_dir . 'mails/da/swipp_payment.txt', _PS_MAIL_DIR_ . 'da/swipp_payment.txt');
         }
         // english mails tmpls
         foreach (Language::getLanguages(false) as $lang) {
@@ -255,11 +239,15 @@ class Swipp extends PaymentModule {
                 continue;
 
             if (isset($lang['iso_code']) && is_dir(_PS_MAIL_DIR_ . $lang['iso_code'])) {
-                copy($copy_files_dir . 'mails/en/swipp_payment.html', _PS_MAIL_DIR_ . $lang['iso_code'] . '/swipp_payment.html');
-                copy($copy_files_dir . 'mails/en/swipp_payment.txt', _PS_MAIL_DIR_ . $lang['iso_code'] . '/swipp_payment.txt');
+                if (!file_exists(_PS_MAIL_DIR_ . $lang['iso_code'] . '/swipp_payment.html'))
+                    copy($copy_files_dir . 'mails/en/swipp_payment.html', _PS_MAIL_DIR_ . $lang['iso_code'] . '/swipp_payment.html');
+                if (!file_exists(_PS_MAIL_DIR_ . $lang['iso_code'] . '/swipp_payment.txt'))
+                    copy($copy_files_dir . 'mails/en/swipp_payment.txt', _PS_MAIL_DIR_ . $lang['iso_code'] . '/swipp_payment.txt');
             } else if (isset($lang['language_code']) && is_dir(_PS_MAIL_DIR_ . $lang['language_code'])) {
-                copy($copy_files_dir . 'mails/en/swipp_payment.html', _PS_MAIL_DIR_ . $lang['language_code'] . '/swipp_payment.html');
-                copy($copy_files_dir . 'mails/en/swipp_payment.txt', _PS_MAIL_DIR_ . $lang['language_code'] . '/swipp_payment.txt');
+                if (!file_exists(_PS_MAIL_DIR_ . $lang['language_code'] . '/swipp_payment.html'))
+                    copy($copy_files_dir . 'mails/en/swipp_payment.html', _PS_MAIL_DIR_ . $lang['language_code'] . '/swipp_payment.html');
+                if (!file_exists(_PS_MAIL_DIR_ . $lang['language_code'] . '/swipp_payment.txt'))
+                    copy($copy_files_dir . 'mails/en/swipp_payment.txt', _PS_MAIL_DIR_ . $lang['language_code'] . '/swipp_payment.txt');
             }
         }
 
@@ -273,31 +261,11 @@ class Swipp extends PaymentModule {
                 !Configuration::deleteByName('SWIPP_SHOW_INVIOCE') ||
                 !Configuration::deleteByName('SWIPP_MAX_AMOUNT') ||
                 !Configuration::deleteByName('SWIPP_PHONE') ||
+                !Configuration::deleteByName('SWIPP_ORDER_STATES') ||
+                !Configuration::deleteByName('SWIPP_PAYMENT_STATE') ||
                 !parent::uninstall())
             return false;
-        // we do not remove the from the system if ordeers are placed, we only mark it as deleted
-        $SwippOrer = new OrderState(Configuration::get('SWIPP_PAYMENT_STATE'));
-        $SwippOrer->deleted = 1;
-        $SwippOrer->update();
-        if (file_exists(_PS_MAIL_DIR_ . 'da/swipp_payment.html')) {
-            unlink(_PS_MAIL_DIR_ . 'da/swipp_payment.html');
-        }
-        if (file_exists(_PS_MAIL_DIR_ . 'da/swipp_payment.txt')) {
-            unlink(_PS_MAIL_DIR_ . 'da/swipp_payment.txt');
-        }
-        foreach (Language::getLanguages(false) as $lang) {
-            if (isset($lang['iso_code']) && file_exists(_PS_MAIL_DIR_ . $lang['iso_code'] . '/swipp_payment.html')) {
-                unlink(_PS_MAIL_DIR_ . $lang['iso_code'] . '/swipp_payment.html');
-            } else if (isset($lang['language_code']) && file_exists(_PS_MAIL_DIR_ . $lang['language_code'] . '/swipp_payment.html')) {
-                unlink(_PS_MAIL_DIR_ . $lang['language_code'] . '/swipp_payment.html');
-            }
 
-            if (isset($lang['iso_code']) && file_exists(_PS_MAIL_DIR_ . $lang['iso_code'] . '/swipp_payment.txt')) {
-                unlink(_PS_MAIL_DIR_ . $lang['iso_code'] . '/swipp_payment.txt');
-            } else if (isset($lang['language_code']) && file_exists(_PS_MAIL_DIR_ . $lang['language_code'] . '/swipp_payment.txt')) {
-                unlink(_PS_MAIL_DIR_ . $lang['language_code'] . '/swipp_payment.txt');
-            }
-        }
         return true;
     }
 
@@ -334,9 +302,10 @@ class Swipp extends PaymentModule {
             }
             unset($_currencies);
             Configuration::updateValue('SWIPP_CURRENCIES', implode(',', $currencies));
-
             Configuration::updateValue('SWIPP_SHOW_CONVERTED', Tools::getValue('SWIPP_SHOW_CONVERTED', 0));
             Configuration::updateValue('SWIPP_SHOW_INVIOCE', Tools::getValue('SWIPP_SHOW_INVIOCE', 0));
+            Configuration::updateValue('SWIPP_ORDER_STATES', implode(',', Tools::getValue('SWIPP_ORDER_STATES', '')));
+            Configuration::updateValue('SWIPP_PAYMENT_STATE', Tools::getValue('SWIPP_PAYMENT_STATE', Configuration::get('PS_OS_PAYMENT')));
         }
         $this->_html .= $this->displayConfirmation($this->l('Settings updated'));
     }
@@ -361,18 +330,19 @@ class Swipp extends PaymentModule {
     }
 
     /**
-     * build the admin form it self.
-     * @global string $currentIndex
+     * build the admin configuration form
      * @return string
      */
     public function renderForm() {
-        if (_PS_VERSION_ < '1.5')
-            global $currentIndex;
+        // get currencies in this shop
         $_currencies = self::__getCurrencies();
         $currencies = array();
+        $danishKroneName = 'Danish Krone (Kr.)';
         foreach ($_currencies as $currenciesK => $currenciesV) {
-            if ((int) $currenciesV->iso_code_num == 208 || strtoupper($currenciesV->iso_code) == 'DKK')
+            if ((int) $currenciesV->iso_code_num == 208 || strtoupper($currenciesV->iso_code) == 'DKK') {
+                $danishKroneName = $currenciesV->name . ' (' . $currenciesV->iso_code . ')';
                 continue;
+            }
             $currencies[] = array(
                 'id' => $currenciesV->id,
                 'name' => $currenciesV->name . '(' . $currenciesV->iso_code . ' : ' . $currenciesV->sign . ')',
@@ -380,9 +350,41 @@ class Swipp extends PaymentModule {
             );
         }
         unset($_currencies);
+
+        // all order states
+        $orderStates = OrderState::getOrderStates($this->context->language->id);
+        $order_state = $selected_order_states = array();
+        if (Configuration::hasKey('SWIPP_ORDER_STATES')) {
+            $selected_order_states = explode(',', Configuration::get('SWIPP_ORDER_STATES'));
+        }
+
+        foreach ($orderStates as $orderState) {
+            if (in_array($orderState['id_order_state'], $selected_order_states)) {
+                $order_state[] = array(
+                    'selected' => true,
+                    'disabled' => false,
+                    'id_category' => $orderState['id_order_state'],
+                    'name' => $orderState['name'],
+                );
+            } else {
+                $order_state[] = array(
+                    'disabled' => false,
+                    'id_category' => $orderState['id_order_state'],
+                    'name' => $orderState['name'],
+                );
+            }
+        }
+
+        $tree = new Tree('swipp-order-state', $order_state);
+        //$tree->setTemplateDirectory(dirname(__FILE__) . '/views/templates/admin/_configure/helpers/tree/');
+        $tree->setNodeItemTemplate('../../../../../../modules/swipp/views/templates/admin/tree_node_item_order_state.tpl');
+        $tree->setContext($this->context);
+        $tree->getContext()->smarty->assign(array('input_name' => 'SWIPP_ORDER_STATES'));
+
+
         $fields_form[0]['form']['legend'] = array(
             'title' => $this->l('Swipp details'),
-            'icon' => 'icon-envelope'
+            'icon' => 'icon-credit-card'
         );
 
         $fields_form[0]['form']['input'][] = array(
@@ -401,12 +403,12 @@ class Swipp extends PaymentModule {
             'label' => $this->l('Swipp Max Payment'),
             'name' => 'SWIPP_MAX_AMOUNT',
             'desc' => $this->l('The maximum amount allowed through swipp per order'),
-            'suffix' => 'Danish Krone (DKK)'
+            'prefix' => $danishKroneName
         );
         if (count($currencies) > 0) {
             $fields_form[0]['form']['input'][] = array(
                 'type' => 'checkbox',
-                'label' => $this->l('Currencies from witch we allow'),
+                'label' => $this->l('Currencies witch we allow'),
                 'name' => 'SWIPP_CURRENCIES',
                 'desc' => $this->l('The currencies you select here will have the swipp payment option available but with the paymant amount converted to Danish Krone'),
                 'values' => array(
@@ -417,6 +419,28 @@ class Swipp extends PaymentModule {
                 'class' => 't'
             );
         }
+        $fields_form[0]['form']['input'][] = array(
+            'name' => 'SWIPP_ORDER_STATES',
+            'type' => 'categories_select',
+            'label' => $this->l('Accepted Order state'),
+            'category_tree' => $tree->render(),
+            'required' => true,
+            'desc' => $this->l('Order states where swipp payment is accepted')
+        );
+        $fields_form[0]['form']['input'][] = array(
+            'name' => 'SWIPP_PAYMENT_STATE',
+            'type' => 'select',
+            'label' => $this->l('Status of payment when order is placed'),
+            'options' => array(
+                'default' => array('value' => 0, 'label' => $this->l('Choose status')),
+                'query' => $order_state,
+                'id' => 'id_category',
+                'name' => 'name'
+            ),
+            'required' => true,
+            'desc' => $this->l('The status the order is set to when the customer clicks the accept button.')
+        );
+
         $fields_form[0]['form']['input'][] = array(
             'type' => 'switch',
             'is_bool' => true,
@@ -461,10 +485,6 @@ class Swipp extends PaymentModule {
         );
 
         $helper = new HelperForm();
-        if (_PS_VERSION_ < '1.6') {
-            $helper->base_folder = dirname(__FILE__) . '/views/templates/helpers/form/';
-            $helper->base_tpl = 'form.tpl';
-        }
         $helper->show_toolbar = false;
         $helper->table = $this->table;
         $lang = new Language((int) Configuration::get('PS_LANG_DEFAULT'));
@@ -474,14 +494,10 @@ class Swipp extends PaymentModule {
         $helper->id = (int) Tools::getValue('id_carrier');
         $helper->identifier = $this->identifier;
         $helper->submit_action = 'btnSubmit';
-        if (_PS_VERSION_ < '1.5')
-            $helper->currentIndex = $currentIndex . '&configure=' . $this->name . '&tab_module=' . $this->tab . '&module_name=' . $this->name;
-        else
-            $helper->currentIndex = AdminController::$currentIndex . '&configure=' . $this->name . '&tab_module=' . $this->tab . '&module_name=' . $this->name;
+        $helper->currentIndex = AdminController::$currentIndex . '&configure=' . $this->name . '&tab_module=' . $this->tab . '&module_name=' . $this->name;
         $helper->token = Tools::getAdminTokenLite('AdminModules');
         $helper->tpl_vars = array(
             'fields_value' => $this->getConfigFieldsValues(),
-            /* 'languages' => $this->context->controller->getLanguages(), */
             'id_language' => $this->context->language->id
         );
         return $helper->generateForm($fields_form);
@@ -493,6 +509,8 @@ class Swipp extends PaymentModule {
      */
     public function getConfigFieldsValues() {
         $retval = array(
+            'SWIPP_ORDER_STATES' => '', /* avoid not isset */
+            'SWIPP_PAYMENT_STATE' => Tools::getValue('SWIPP_PAYMENT_STATE', Configuration::get('SWIPP_PAYMENT_STATE')),
             'SWIPP_OWNER' => Tools::getValue('SWIPP_OWNER', Configuration::get('SWIPP_OWNER')),
             'SWIPP_PHONE' => Tools::getValue('SWIPP_PHONE', Configuration::get('SWIPP_PHONE')),
             'SWIPP_MAX_AMOUNT' => Tools::getValue('SWIPP_MAX_AMOUNT', Configuration::get('SWIPP_MAX_AMOUNT')),

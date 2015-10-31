@@ -18,9 +18,11 @@
 *  @copyright 2014 Christian M. Jensen
 *  @license http://www.gnu.org/copyleft/gpl.html GNU General Public License version 3
 *}
+
+
 {if $status == 'ok'}
-    <p>{l s='Your order on %s is complete.' sprintf=$shop_name mod='swipp'}
-        <br /><br />
+    <div class="box">
+        <p class="cheque-indent"><strong class="dark">{l s='Your order on %s is complete.' sprintf=$shop_name mod='swipp'}</strong></p>
         {l s='Please send us a swipp payment with' mod='swipp'}
         <br />- {l s='Amount' mod='swipp'} <span class="price"> <strong>{$total_to_pay}</strong></span>
         <br />- {l s='Name of account owner' mod='swipp'}  <strong>{if $swippOwner}{$swippOwner}{else}___________{/if}</strong>
@@ -28,10 +30,10 @@
         <br />{l s='An email has been sent with this information.' mod='swipp'}
         <br /> <strong>{l s='Your order will be sent as soon as we receive payment.' mod='swipp'}</strong>
         <br />{l s='If you have questions, comments or concerns, please contact our' mod='swipp'} <a href="{$link->getPageLink('contact', true)|escape:'html':'UTF-8'}">{l s='expert customer support team. ' mod='swipp'}</a>.
-    </p>
+    </div>
 {else}
-    <p class="warning">
+    <p class="alert alert-warning">
         {l s='We noticed a problem with your order. If you think this is an error, feel free to contact our' mod='swipp'} 
-        <a href="{$link->getPageLink('contact', true)|escape:'html'}">{l s='expert customer support team. ' mod='swipp'}</a>.
+        <a href="{$link->getPageLink('contact', true)|escape:'html':'UTF-8'}">{l s='expert customer support team. ' mod='swipp'}</a>.
     </p>
 {/if}

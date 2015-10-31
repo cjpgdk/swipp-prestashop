@@ -24,25 +24,12 @@
 *  International Registered Trademark & Property of PrestaShop SA
 */
 
-/**
- * Class allow to display tpl on the FO
- */
-class BWDisplay extends FrontController
-{
-	// Assign template, on 1.4 create it else assign for 1.5
-	public function setTemplate($template)
-	{
-		if (_PS_VERSION_ >= '1.5')
-			parent::setTemplate($template);
-		else
-			$this->template = $template;
-	}
+header('Expires: Mon, 26 Jul 1997 05:00:00 GMT');
+header('Last-Modified: '.gmdate('D, d M Y H:i:s').' GMT');
 
-	// Overload displayContent for 1.4
-	public function displayContent()
-	{
-		parent::displayContent();
+header('Cache-Control: no-store, no-cache, must-revalidate');
+header('Cache-Control: post-check=0, pre-check=0', false);
+header('Pragma: no-cache');
 
-		echo Context::getContext()->smarty->fetch($this->template);
-	}
-}
+header('Location: ../../../../../../../../');
+exit;

@@ -3,7 +3,7 @@
 function upgrade_module_0_2($module) {
 
     /*
-     *  new setting, select the oordre state were ordre is ok.!
+     * new setting, select the oordre state were ordre is ok.!
      * Validate the current order state
      */
     $payment_states_accepted = (int) Configuration::get('SWIPP_PAYMENT_STATE');
@@ -18,8 +18,6 @@ function upgrade_module_0_2($module) {
     } else {
         $payment_states_accepted = "," . Configuration::get('PS_OS_PAYMENT');
     }
-    if (Configuration::hasKey('PS_OS_WS_PAYMENT'))
-        $payment_states_accepted .= "," . Configuration::get('PS_OS_WS_PAYMENT');
     if (Configuration::hasKey('PS_OS_OUTOFSTOCK_UNPAID'))
         $payment_states_accepted .= "," . Configuration::get('PS_OS_OUTOFSTOCK_UNPAID');
     if (Configuration::hasKey('PS_OS_OUTOFSTOCK'))

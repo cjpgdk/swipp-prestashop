@@ -161,7 +161,7 @@ class Swipp extends PaymentModule {
         if (isset($params['object'])) {
             $object = $params['object'];
             $order = new Order(intval($object->id_order));
-            if (strtolower($order->payment) != strtolower($this->displayName) && strtolower($order->payment) == strtolower($this->name))
+            if (strtolower($order->payment) != strtolower($this->displayName) && strtolower($order->payment) != strtolower($this->name))
                 return ""; /* not payment by this module. */
             $_order_currency = new Currency($order->id_currency);
             $this->smarty->assign(array(
